@@ -1,0 +1,23 @@
+@import 'figranium-ui-source/src/embed/styles.css';
+
+.figranium-embed {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  contain: layout paint style;
+}
+
+.figranium-embed__surface {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.figranium-embed__interaction-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 2147483647;
+  cursor: default;
+  background: transparent;
+}
