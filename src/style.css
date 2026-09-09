@@ -14,6 +14,14 @@
   user-select: none;
 }
 
+/* Hide editor-only controls while preserving task labels and summaries. */
+.figranium-embed .figranium-readonly-canvas button[data-action-drop-scope],
+.figranium-embed .figranium-readonly-canvas button[aria-label^="Add action"],
+.figranium-embed .figranium-readonly-canvas button[aria-label="Configure block"],
+.figranium-embed .figranium-readonly-canvas button[aria-label="Open Task Settings"] {
+  display: none !important;
+}
+
 .figranium-embed__interaction-shield {
   position: absolute;
   inset: 0;

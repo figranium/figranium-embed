@@ -4,7 +4,7 @@ Read-only Figranium task rendering inside a real iframe, with **no server and no
 
 ![Google Maps Leads Scraper rendered with Figranium Embed](./assets/google-maps-leads-scraper.png)
 
-The screenshot above is captured from the real zero-host iframe using the **Google Maps Leads Scraper** preset from Figranium Templates Hub.
+The screenshot above is captured from the real zero-host iframe using the **Google Maps Lead Scraper** preset from Figranium Templates Hub.
 
 `@figranium/embed` ships the iframe document inside the package. The package creates an iframe with `srcdoc`, loads Figranium's canonical read-only UI inside it, and passes task JSON through a small internal `postMessage` protocol.
 
@@ -40,7 +40,7 @@ embed.destroy();
 
 ## What the iframe can do
 
-It renders only what already exists in the task. It cannot edit blocks, open configuration modals, add or drag actions, save, run tasks, open the browser, use the selector picker, authenticate, or persist anything.
+It renders only what already exists in the task. Task labels and summaries remain visible while editor-only add, settings, and tune controls are hidden. It cannot edit blocks, open configuration modals, add or drag actions, save, run tasks, open the browser, use the selector picker, authenticate, or persist anything.
 
 The iframe is sandboxed with scripts enabled and receives task data only from the page that created it.
 
@@ -48,7 +48,18 @@ The iframe is sandboxed with scripts enabled and receives task data only from th
 
 This repository does **not** maintain a copied Figranium editor. Before each package build, it clones `figranium/figranium` and builds the iframe document from Figranium's canonical `src/embed` entrypoint and stylesheet.
 
-Figranium exposes a purpose-built `ReadOnlyCanvas`, so Embed does not depend on the editor's internal prop surface. The compiled iframe document is then inlined into the npm package itself. CI rebuilds against current Figranium so incompatible upstream UI changes fail instead of silently drifting.
+At runtime, the iframe prefers the latest **compiled** canonical Figranium stylesheet published automatically from `figranium/figranium` UI changes. If that stylesheet is unavailable, invalid, blocked, or the user is offline, Embed keeps using the fully compiled stylesheet bundled into the installed npm package. There is still no hosted iframe endpoint.
+
+For deterministic/offline-only rendering, disable the live stylesheet check:
+
+```js
+mountFigraniumEmbed('#figranium-task', {
+  task,
+  preferBundled: true,
+});
+```
+
+Figranium exposes a purpose-built `ReadOnlyCanvas`, so Embed does not depend on the editor's internal prop surface. CI also rebuilds against current Figranium so incompatible upstream UI changes fail instead of silently drifting.
 
 `FIGRANIUM_REF` can pin a build to a specific Figranium branch or tag; release builds default to `main`.
 
