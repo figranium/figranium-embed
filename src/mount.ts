@@ -12,6 +12,8 @@ export interface MountFigraniumEmbedOptions {
   className?: string;
   title?: string;
   autoResize?: boolean;
+  /** Use only the CSS bundled with this package instead of checking for current Figranium styles. */
+  preferBundled?: boolean;
 }
 
 export interface FigraniumEmbedController {
@@ -39,10 +41,11 @@ export function mountFigraniumEmbed(
 
   let task = options.task;
   const autoResize = options.autoResize ?? true;
+  const preferBundled = options.preferBundled ?? false;
 
   const sendTask = () => {
     iframe.contentWindow?.postMessage(
-      { type: SET_TASK, version: PROTOCOL_VERSION, task },
+      { type: SET_TASK, version: PROTOCOL_VERSION, task, preferBundled },
       '*',
     );
   };
