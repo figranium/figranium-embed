@@ -20,15 +20,14 @@
     "LICENSE"
   ],
   "scripts": {
+    "sync:figranium": "node scripts/sync-figranium.mjs",
+    "prebuild": "npm run sync:figranium",
     "build": "tsc -p tsconfig.json && vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
     "react": ">=19",
     "react-dom": ">=19"
-  },
-  "dependencies": {
-    "figranium-ui-source": "github:figranium/figranium#4d9627fc4f40706d1f0b568c5f7784096bcd0c0d"
   },
   "devDependencies": {
     "@types/react": "^19.2.7",
