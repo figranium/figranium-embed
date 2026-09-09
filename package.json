@@ -1,7 +1,7 @@
 {
   "name": "@figranium/embed",
   "version": "0.1.0",
-  "description": "Read-only embeddable Figranium task UI, built primarily for iframe embedding.",
+  "description": "Zero-host, read-only Figranium task embeds rendered inside package-created iframes.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -12,6 +12,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
     "./style.css": "./dist/style.css"
   },
   "files": [
@@ -21,15 +25,19 @@
   ],
   "scripts": {
     "sync:figranium": "node scripts/sync-figranium.mjs",
-    "prebuild": "npm run sync:figranium",
-    "build": "tsc -p tsconfig.json && vite build && vite build --config vite.iframe.config.ts",
-    "build:iframe": "vite build --config vite.iframe.config.ts",
-    "pretypecheck": "npm run sync:figranium",
+    "build:document": "vite build --config vite.iframe.config.ts && node scripts/generate-srcdoc.mjs",
+    "prebuild": "npm run sync:figranium && npm run build:document",
+    "build": "tsc -p tsconfig.json && vite build",
+    "pretypecheck": "npm run sync:figranium && npm run build:document",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
     "react": ">=19",
     "react-dom": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "react": { "optional": true },
+    "react-dom": { "optional": true }
   },
   "dependencies": {
     "react-markdown": "^10.1.0",
