@@ -40,7 +40,7 @@ embed.destroy();
 
 ## What the iframe can do
 
-It renders only what already exists in the task. Editor-only add, settings, and tune controls are hidden, and it cannot edit blocks, open configuration modals, add or drag actions, save, run tasks, open the browser, use the selector picker, authenticate, or persist anything.
+It renders only what already exists in the task. Task labels and summaries remain visible while editor-only add, settings, and tune controls are hidden. It cannot edit blocks, open configuration modals, add or drag actions, save, run tasks, open the browser, use the selector picker, authenticate, or persist anything.
 
 The iframe is sandboxed with scripts enabled and receives task data only from the page that created it.
 
