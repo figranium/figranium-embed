@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.figranium-source/
+.DS_Store
