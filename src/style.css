@@ -1,4 +1,4 @@
-@import 'figranium-ui-source/src/embed/styles.css';
+@import '@figranium-source/embed/styles.css';
 
 .figranium-embed {
   position: relative;
