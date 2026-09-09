@@ -23,15 +23,22 @@
     "sync:figranium": "node scripts/sync-figranium.mjs",
     "prebuild": "npm run sync:figranium",
     "build": "tsc -p tsconfig.json && vite build",
+    "pretypecheck": "npm run sync:figranium",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
     "react": ">=19",
     "react-dom": ">=19"
   },
+  "dependencies": {
+    "react-markdown": "^10.1.0",
+    "react-window": "^1.8.8",
+    "remark-gfm": "^4.0.1"
+  },
   "devDependencies": {
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@types/react-window": "^1.8.8",
     "@vitejs/plugin-react": "^5.1.2",
     "typescript": "^5.9.3",
     "vite": "^7.3.2"
