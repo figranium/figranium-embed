@@ -1,7 +1,7 @@
 {
   "name": "@figranium/embed",
   "version": "0.1.0",
-  "description": "Read-only embeddable Figranium task UI.",
+  "description": "Read-only embeddable Figranium task UI, built primarily for iframe embedding.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,7 +22,8 @@
   "scripts": {
     "sync:figranium": "node scripts/sync-figranium.mjs",
     "prebuild": "npm run sync:figranium",
-    "build": "tsc -p tsconfig.json && vite build",
+    "build": "tsc -p tsconfig.json && vite build && vite build --config vite.iframe.config.ts",
+    "build:iframe": "vite build --config vite.iframe.config.ts",
     "pretypecheck": "npm run sync:figranium",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
