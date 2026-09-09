@@ -14,7 +14,7 @@ export default defineConfig({
     outDir: '.tmp-iframe',
     emptyOutDir: true,
     rollupOptions: {
-      input: fileURLToPath(new URL('./index.html', import.meta.url)),
+      input: fileURLToPath(new URL('./iframe.internal.html', import.meta.url)),
     },
   },
 });
