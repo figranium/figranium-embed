@@ -1,77 +1,65 @@
 # Figranium Embed
 
-Read-only, serverless Figranium task rendering built primarily for iframe embedding.
+Read-only Figranium task rendering inside a real iframe, with **no server and no hosted embed URL**.
 
-The iframe renders the canonical Figranium task canvas without editing, persistence, browser-opening, selector inspection, modals, or execution controls.
+`@figranium/embed` ships the iframe document inside the package. The package creates an iframe with `srcdoc`, loads Figranium's canonical read-only UI inside it, and passes task JSON through a small internal `postMessage` protocol.
 
-## Iframe embedding
-
-Build and host `dist/iframe` as a static site. The root page is the embed endpoint.
-
-```html
-<iframe
-  id="figranium-embed"
-  src="https://embed.example.com/"
-  style="width:100%;height:600px;border:0"
-></iframe>
-
-<script>
-  const frame = document.getElementById('figranium-embed');
-
-  window.addEventListener('message', (event) => {
-    if (event.source !== frame.contentWindow) return;
-
-    if (event.data?.type === 'figranium:embed:ready') {
-      frame.contentWindow.postMessage({
-        type: 'figranium:embed:set-task',
-        version: 1,
-        task
-      }, '*');
-    }
-
-    if (event.data?.type === 'figranium:embed:resize') {
-      frame.style.height = `${event.data.height}px`;
-    }
-  });
-</script>
-```
-
-Protocol v1 messages:
-
-- `figranium:embed:ready` — sent by the iframe when it is ready for task data.
-- `figranium:embed:set-task` — sent by the parent with `{ version: 1, task }`.
-- `figranium:embed:resize` — sent by the iframe with its current content height.
-
-The iframe accepts task JSON only from its parent window and locks to the origin that sends the first valid task message.
-
-## Why the UI stays in sync
-
-This repository does **not** maintain a copied Figranium editor. Before every build, `scripts/sync-figranium.mjs` clones `figranium/figranium`, and both the iframe and React package import Figranium's canonical `src/embed` entrypoint and stylesheet directly.
-
-Figranium itself exposes a purpose-built `ReadOnlyCanvas`, so internal editor prop changes do not become an Embed API contract. If an upstream Figranium UI change breaks Embed compatibility, CI fails instead of silently allowing the two interfaces to drift.
-
-Set `FIGRANIUM_REF` to build against a specific Figranium branch or tag. It defaults to `main`.
-
-## React package
-
-The React package is secondary to the iframe endpoint.
+## Install
 
 ```bash
 npm install @figranium/embed
 ```
 
+## Embed a task
+
+```html
+<div id="figranium-task"></div>
+
+<script type="module">
+  import { mountFigraniumEmbed } from '@figranium/embed';
+
+  const embed = mountFigraniumEmbed('#figranium-task', {
+    task,
+    height: 600,
+  });
+</script>
+```
+
+That's it. There is no embed domain to configure, deploy, or keep online.
+
+The returned controller can replace the rendered task or remove the iframe:
+
+```js
+embed.setTask(nextTask);
+embed.destroy();
+```
+
+## What the iframe can do
+
+It renders only what already exists in the task. It cannot edit blocks, open configuration modals, add or drag actions, save, run tasks, open the browser, use the selector picker, authenticate, or persist anything.
+
+The iframe is sandboxed with scripts enabled and receives task data only from the page that created it.
+
+## Why the UI stays in sync
+
+This repository does **not** maintain a copied Figranium editor. Before each package build, it clones `figranium/figranium` and builds the iframe document from Figranium's canonical `src/embed` entrypoint and stylesheet.
+
+Figranium exposes a purpose-built `ReadOnlyCanvas`, so Embed does not depend on the editor's internal prop surface. The compiled iframe document is then inlined into the npm package itself. CI rebuilds against current Figranium so incompatible upstream UI changes fail instead of silently drifting.
+
+`FIGRANIUM_REF` can pin a build to a specific Figranium branch or tag; release builds default to `main`.
+
+## React
+
+React is optional and is not required for the primary iframe API. React apps that want a direct component instead of iframe isolation can use the secondary entrypoint:
+
 ```tsx
-import { FigraniumEmbed } from '@figranium/embed';
+import { FigraniumEmbed } from '@figranium/embed/react';
 import '@figranium/embed/style.css';
 
 export function Preview({ task }) {
   return <FigraniumEmbed task={task} height={600} />;
 }
 ```
-
-## Scope
-
-Figranium Embed is intentionally display-only. It accepts task JSON and renders only the existing task using Figranium's real UI. It does not require a Figranium server and does not provide Run, Open Browser, the selector picker, editing, saving, authentication, persistence, or configuration modals.
 
 ## Development
 
@@ -80,7 +68,7 @@ npm install
 npm run build
 ```
 
-`npm run build` produces both the package build and `dist/iframe`, and automatically syncs the current canonical Figranium UI first.
+The build flow syncs current Figranium, compiles its read-only UI into a temporary standalone document, inlines that document into the package, deletes the temporary site output, then builds the public package.
 
 ## License
 

@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {
@@ -10,10 +11,10 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist/iframe',
-    emptyOutDir: false,
+    outDir: '.tmp-iframe',
+    emptyOutDir: true,
     rollupOptions: {
-      input: fileURLToPath(new URL('./index.html', import.meta.url)),
+      input: fileURLToPath(new URL('./iframe.internal.html', import.meta.url)),
     },
   },
 });

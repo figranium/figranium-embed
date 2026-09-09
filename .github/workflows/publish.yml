@@ -1,0 +1,43 @@
+name: Publish npm
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - package.json
+      - src/**
+      - scripts/**
+      - iframe.internal.html
+      - vite*.ts
+      - .github/workflows/publish.yml
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm install
+      - name: Build
+        run: npm run build
+      - name: Publish unpublished version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN is not configured; skipping publish."
+            exit 0
+          fi
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "@figranium/embed@$VERSION" version >/dev/null 2>&1; then
+            echo "@figranium/embed@$VERSION is already published; skipping."
+            exit 0
+          fi
+          npm publish --access public --provenance
