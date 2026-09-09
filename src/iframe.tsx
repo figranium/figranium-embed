@@ -8,9 +8,11 @@ const PROTOCOL_VERSION = 1;
 const READY = 'figranium:embed:ready';
 const SET_TASK = 'figranium:embed:set-task';
 const RESIZE = 'figranium:embed:resize';
+const LIVE_CSS_URL = 'https://raw.githubusercontent.com/figranium/figranium/embed-assets/embed.css';
 
 function IframeApp() {
   const [task, setTask] = useState<Task | null>(null);
+  const [preferBundled, setPreferBundled] = useState<boolean | null>(null);
 
   useEffect(() => {
     let lockedOrigin: string | null = null;
@@ -31,6 +33,7 @@ function IframeApp() {
       }
       if (event.origin !== lockedOrigin || event.source !== lockedSource) return;
 
+      setPreferBundled(Boolean(data.preferBundled));
       setTask(data.task as Task);
     };
 
@@ -38,6 +41,37 @@ function IframeApp() {
     sendReady();
     return () => window.removeEventListener('message', onMessage);
   }, []);
+
+  useEffect(() => {
+    if (preferBundled !== false) return;
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 2500);
+
+    void fetch(LIVE_CSS_URL, { cache: 'no-store', signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Live Figranium CSS returned ${response.status}`);
+        const css = await response.text();
+        if (!css.includes('--app-bg') || css.length < 1000) {
+          throw new Error('Live Figranium CSS failed validation.');
+        }
+
+        const style = document.createElement('style');
+        style.dataset.figraniumLive = 'true';
+        style.textContent = css;
+        document.head.appendChild(style);
+      })
+      .catch(() => {
+        // Bundled CSS remains active as the offline/unavailable fallback.
+      })
+      .finally(() => window.clearTimeout(timeout));
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+      document.querySelector('style[data-figranium-live="true"]')?.remove();
+    };
+  }, [preferBundled]);
 
   useEffect(() => {
     if (!task) return;
