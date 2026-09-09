@@ -13,7 +13,7 @@ export default defineConfig({
     outDir: 'dist/iframe',
     emptyOutDir: false,
     rollupOptions: {
-      input: fileURLToPath(new URL('./iframe.html', import.meta.url)),
+      input: fileURLToPath(new URL('./index.html', import.meta.url)),
     },
   },
 });
