@@ -2,6 +2,10 @@
 
 Read-only Figranium task rendering inside a real iframe, with **no server and no hosted embed URL**.
 
+![Google Maps Leads Scraper rendered with Figranium Embed](./assets/google-maps-leads-scraper.png)
+
+The screenshot above is captured from the real zero-host iframe using the **Google Maps Leads Scraper** preset from Figranium Templates Hub.
+
 `@figranium/embed` ships the iframe document inside the package. The package creates an iframe with `srcdoc`, loads Figranium's canonical read-only UI inside it, and passes task JSON through a small internal `postMessage` protocol.
 
 ## Install
