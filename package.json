@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Zero-host, read-only Figranium task embeds rendered inside package-created iframes.",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/figranium/figranium-embed.git"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
