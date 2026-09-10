@@ -27,7 +27,6 @@ export function FigraniumEmbed({
       <div className="figranium-embed__surface" aria-hidden="true">
         <ReadOnlyCanvas task={task} />
       </div>
-      <div className="figranium-embed__interaction-shield" aria-hidden="true" />
     </div>
   );
 }
