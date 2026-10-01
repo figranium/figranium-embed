@@ -14,7 +14,6 @@ export default defineConfig({
       entry: {
         index: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
         react: fileURLToPath(new URL('./src/react.ts', import.meta.url)),
-        'docs-preview': fileURLToPath(new URL('./src/docs-preview.ts', import.meta.url)),
       },
       formats: ['es'],
       cssFileName: 'style',
