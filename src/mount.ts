@@ -14,6 +14,8 @@ export interface MountFigraniumEmbedOptions {
   autoResize?: boolean;
   /** Use only the CSS bundled with this package instead of checking for current Figranium styles. */
   preferBundled?: boolean;
+  /** Canonical Figranium visual theme used by the read-only canvas. */
+  theme?: 'light' | 'dark' | 'solarized-light' | 'solarized-dark';
 }
 
 export interface FigraniumEmbedController {
@@ -45,7 +47,7 @@ export function mountFigraniumEmbed(
 
   const sendTask = () => {
     iframe.contentWindow?.postMessage(
-      { type: SET_TASK, version: PROTOCOL_VERSION, task, preferBundled },
+      { type: SET_TASK, version: PROTOCOL_VERSION, task, preferBundled, theme: options.theme ?? 'dark' },
       '*',
     );
   };
