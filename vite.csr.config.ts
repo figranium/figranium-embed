@@ -10,16 +10,14 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: 'dist/csr',
+    emptyOutDir: false,
+    assetsInlineLimit: 0,
     lib: {
-      entry: {
-        index: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
-        react: fileURLToPath(new URL('./src/react.ts', import.meta.url)),
-      },
-      formats: ['es'],
-      cssFileName: 'style',
-    },
-    rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      entry: fileURLToPath(new URL('./src/csr.tsx', import.meta.url)),
+      name: 'FigraniumEmbed',
+      formats: ['iife'],
+      fileName: () => 'figranium-embed.csr.js',
     },
   },
 });
