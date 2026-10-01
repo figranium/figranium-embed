@@ -13,6 +13,7 @@ const LIVE_CSS_URL = 'https://raw.githubusercontent.com/figranium/figranium/embe
 function IframeApp() {
   const [task, setTask] = useState<Task | null>(null);
   const [preferBundled, setPreferBundled] = useState<boolean | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark' | 'solarized-light' | 'solarized-dark'>('dark');
 
   useEffect(() => {
     let lockedOrigin: string | null = null;
@@ -35,12 +36,20 @@ function IframeApp() {
 
       setPreferBundled(Boolean(data.preferBundled));
       setTask(data.task as Task);
+      if (['light', 'dark', 'solarized-light', 'solarized-dark'].includes(data.theme)) {
+        setTheme(data.theme);
+      }
     };
 
     window.addEventListener('message', onMessage);
     sendReady();
     return () => window.removeEventListener('message', onMessage);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme.includes('light') ? 'light' : 'dark';
+  }, [theme]);
 
   useEffect(() => {
     if (preferBundled !== false) return;
